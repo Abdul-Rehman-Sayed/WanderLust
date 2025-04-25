@@ -15,7 +15,7 @@ router
   .route("/login")
   .get(userController.renderLoginForm)
   .post(
-    saveRedirectUrl, //call saveRedirectUrl middleware to save the redirectUrl in res.locals before authentication
+    saveRedirectUrl,
     //authenticate() function, which is used as route middleware to authenticate requests.
     passport.authenticate("local", {
       //The string "local" refers to the strategy Passport.js should use to authenticate the user.

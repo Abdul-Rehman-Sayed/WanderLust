@@ -69,7 +69,7 @@
               Rated: 3 stars
             </p>
             <p class="card-text"><%= review.comment %></p>
-            <form action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST"> <!-- reviews in which review._id is present will be deleted but also the object of review in listings must be deleted  -->
+            <form action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST"> 
               <button class="btn btn-danger">Delete</button>
             </form>
           </div>

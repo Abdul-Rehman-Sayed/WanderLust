@@ -41,7 +41,7 @@ module.exports.createListing = async (req, res, next) => {
   let url = req.file.path;
   let filename = req.file.filename;
   const newListing = new Listing(req.body.listing); //this will provide the object with key and value only and if we write only req.body it will provide the listing object. We make it new Listing to create an instance (copy)
-  newListing.owner = req.user._id; //current user id should be saved as owner
+  newListing.owner = req.user._id; 
   newListing.image = { url, filename }; //this will save the image url and filename in the listing collection
   newListing.geometry = response.body.features[0].geometry; //this will save the location in the listing collection and the location is in the object feature and the location is in the object geometry
   let savedListing = await newListing.save();
@@ -64,9 +64,7 @@ module.exports.renderEditForm = async (req, res) => {
 
 module.exports.updateListing = async (req, res) => {
   let { id } = req.params;
-  let listing = await Listing.findByIdAndUpdate(id, { ...req.body.listing }); //in req.body.listing we will have a object with key value and we will deconstruct it using ... and then pass it to the new updated value
-
-  // If req.file exists, it means the user uploaded a file. Without this check, url and filename might be undefined.
+  let listing = await Listing.findByIdAndUpdate(id, { ...req.body.listing }); 
   if (typeof req.file !== "undefined") {
     //
     let url = req.file.path;

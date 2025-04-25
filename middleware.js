@@ -5,7 +5,7 @@ const { listingSchema, reviewSchema } = require("./schema.js");
 
 module.exports.isLoggedIn = (req, res, next) => {
   if (!req.isAuthenticated()) {
-    req.session.redirectUrl = req.originalUrl; //in session create a new parameter redirectUrl in which store the originalUrl(full path) when signed up redirect to the original path
+    req.session.redirectUrl = req.originalUrl; 
     req.flash("error", "Please login to create a new listing!");
     return res.redirect("/login");
   }
@@ -14,7 +14,7 @@ module.exports.isLoggedIn = (req, res, next) => {
 
 module.exports.saveRedirectUrl = (req, res, next) => {
   if (req.session.redirectUrl) {
-    res.locals.redirectUrl = req.session.redirectUrl; //if user is authenticated then save the redirectUrl in res.locals
+    res.locals.redirectUrl = req.session.redirectUrl; 
   }
   next();
 };
@@ -22,7 +22,6 @@ module.exports.saveRedirectUrl = (req, res, next) => {
 module.exports.isOwner = async (req, res, next) => {
   let { id } = req.params;
   let listing = await Listing.findById(id);
-  //if the listings owner is not equal to the user who wants to edit give a error
   if (!listing.owner._id.equals(res.locals.currentUser._id)) {
     //The .equals() method is needed because these _id fields are likely MongoDB ObjectIds, and comparing them using === won't work.
     req.flash("error", "You do not have permission to do that!");

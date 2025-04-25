@@ -1,8 +1,6 @@
-//if the environment is not production then only load the .env file
 if (process.env.NODE_ENV != "production") {
   require("dotenv").config();
 }
-// console.log(process.env.SECRET); // remove this after you've confirmed it is working
 
 const express = require("express");
 const app = express();
@@ -64,22 +62,18 @@ const sessionOptions = {
   resave: false,
   saveUninitialized: true,
   cookie: {
-    expires: Date.now() + 7 * 24 * 60 * 60 * 1000, //7 days
+    expires: Date.now() + 7 * 24 * 60 * 60 * 1000, 
     maxAge: 7 * 24 * 60 * 60 * 1000,
-    httpOnly: true, //helps to prevent cross-site scripting attacks
+    httpOnly: true,
   },
 };
-
-// app.get("/", (req, res) => {
-//   res.render("listings");
-// });
 
 app.use(session(sessionOptions));
 app.use(flash()); //flash messages
 
 app.use(passport.initialize()); //initialize passport
 app.use(passport.session()); //use passport session to manage user sessions
-passport.use(new LocalStrategy(User.authenticate())); //use local strategy for authentication for User model
+passport.use(new LocalStrategy(User.authenticate())); 
 
 passport.serializeUser(User.serializeUser()); //serialize user -> to store user details in session
 passport.deserializeUser(User.deserializeUser()); //deserialize user -> to remove user from session
@@ -87,7 +81,7 @@ passport.deserializeUser(User.deserializeUser()); //deserialize user -> to remov
 app.use((req, res, next) => {
   res.locals.success = req.flash("success"); //flash success message
   res.locals.error = req.flash("error"); //flash error message
-  res.locals.currentUser = req.user; //current user is used to check if user is logged in and since req cannot be used directly in ejs we use res.locals and access it there
+  res.locals.currentUser = req.user; 
   next();
 });
 
