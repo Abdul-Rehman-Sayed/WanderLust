@@ -85,14 +85,14 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/demouser", async (req, res) => {
-  let fakeUser = {
-    email: "student@gmail.com",
-    username: "deltastudent",
-  };
-  let registeredUser = await User.register(fakeUser, "helloworld"); //registering the user with username and password register(user, password, callback) callback is optional
-  res.send(registeredUser);
-});
+// app.get("/demouser", async (req, res) => {
+//   let fakeUser = {
+//     email: "student@gmail.com",
+//     username: "deltastudent",
+//   };
+//   let registeredUser = await User.register(fakeUser, "helloworld"); //registering the user with username and password register(user, password, callback) callback is optional
+//   res.send(registeredUser);
+// });
 
 //Routes
 app.use("/listings", listingRouter); //Every route inside listing.js will be prefixed with /listings.
