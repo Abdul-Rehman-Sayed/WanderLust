@@ -8,17 +8,21 @@ const methodOverride = require("method-override");
 const path = require("path");
 const mongoose = require("mongoose");
 const ejsMate = require("ejs-mate");
+
 const port = 8080;
 const dbUrl = process.env.ATLASDB_URL;
+
 const ExpressError = require("./utils/ExpressError.js");
 const listingRouter = require("./routes/listing.js");
 const reviewRouter = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
+
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const flash = require("connect-flash");
 const passport = require("passport"); //passport is used for authentication
 const LocalStrategy = require("passport-local"); //passport-local is a strategy for passport authentication
+
 const User = require("./models/user.js");
 const review = require("./models/review.js");
 
