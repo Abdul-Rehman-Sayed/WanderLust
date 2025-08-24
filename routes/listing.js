@@ -14,8 +14,8 @@ router
   .get(wrapAsync(listingController.index)) //single function index from listingController
   .post(
     isLoggedIn,
-    // validateListing,
     upload.single("listing[image]"), // Middleware to handle single file upload with the field name 'listing[image]'
+    validateListing,
     wrapAsync(listingController.createListing)
   );
 

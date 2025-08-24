@@ -66,7 +66,7 @@ const sessionOptions = {
   resave: false,
   saveUninitialized: true,
   cookie: {
-    expires: Date.now() + 7 * 24 * 60 * 60 * 1000, 
+    expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
     maxAge: 7 * 24 * 60 * 60 * 1000,
     httpOnly: true,
   },
@@ -77,7 +77,7 @@ app.use(flash()); //flash messages
 
 app.use(passport.initialize()); //initialize passport
 app.use(passport.session()); //use passport session to manage user sessions
-passport.use(new LocalStrategy(User.authenticate())); 
+passport.use(new LocalStrategy(User.authenticate()));
 
 passport.serializeUser(User.serializeUser()); //serialize user -> to store user details in session
 passport.deserializeUser(User.deserializeUser()); //deserialize user -> to remove user from session
@@ -85,7 +85,7 @@ passport.deserializeUser(User.deserializeUser()); //deserialize user -> to remov
 app.use((req, res, next) => {
   res.locals.success = req.flash("success"); //flash success message
   res.locals.error = req.flash("error"); //flash error message
-  res.locals.currentUser = req.user; 
+  res.locals.currentUser = req.user;
   next();
 });
 
@@ -97,6 +97,10 @@ app.use((req, res, next) => {
 //   let registeredUser = await User.register(fakeUser, "helloworld"); //registering the user with username and password register(user, password, callback) callback is optional
 //   res.send(registeredUser);
 // });
+
+app.get("/", (req, res) => {
+  res.redirect("/listings");
+});
 
 //Routes
 app.use("/listings", listingRouter); //Every route inside listing.js will be prefixed with /listings.

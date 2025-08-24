@@ -41,7 +41,7 @@ module.exports.createListing = async (req, res, next) => {
   let url = req.file.path;
   let filename = req.file.filename;
   const newListing = new Listing(req.body.listing); //this will provide the object with key and value only and if we write only req.body it will provide the listing object. We make it new Listing to create an instance (copy)
-  newListing.owner = req.user._id; 
+  newListing.owner = req.user._id;
   newListing.image = { url, filename }; //this will save the image url and filename in the listing collection
   newListing.geometry = response.body.features[0].geometry; //this will save the location in the listing collection and the location is in the object feature and the location is in the object geometry
   let savedListing = await newListing.save();
@@ -64,16 +64,29 @@ module.exports.renderEditForm = async (req, res) => {
 
 module.exports.updateListing = async (req, res) => {
   let { id } = req.params;
-  let listing = await Listing.findByIdAndUpdate(id, { ...req.body.listing }); 
+  // Geocode the new location first
+  let response = await geocodingClient
+    .forwardGeocode({
+      query: req.body.listing.location,
+      limit: 1,
+    })
+    .send();
+  // Get the new geometry
+  let newGeometry = response.body.features[0].geometry;
+  // Find the listing and update its text fields
+  let listing = await Listing.findByIdAndUpdate(id, { ...req.body.listing });
+  // Set the new geometry on the listing object
+  listing.geometry = newGeometry;
+  // If a new file was uploaded, update the image
   if (typeof req.file !== "undefined") {
-    //
     let url = req.file.path;
     let filename = req.file.filename;
-    listing.image = { url, filename }; //this will save the image url and filename in the listing collection
-    await listing.save(); //save the updated listing
+    listing.image = { url, filename };
   }
+  // Save all changes (including new geometry and possibly new image)
+  await listing.save();
   req.flash("success", "Successfully Updated Listing!");
-  res.redirect(`/listings/${id}`); //redirect to that id which was being edited after editing
+  res.redirect(`/listings/${id}`);
 };
 
 module.exports.destroyListing = async (req, res) => {
