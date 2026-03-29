@@ -4,8 +4,26 @@ const mapToken = process.env.MAP_TOKEN;
 const geocodingClient = mbxGeocoding({ accessToken: mapToken });
 
 module.exports.index = async (req, res) => {
-  const allListings = await Listing.find({});
-  res.render("listings/index.ejs", { allListings });
+  let filter = {};
+  // Search by title, location, or country
+  if (req.query.search) {
+    const searchRegex = new RegExp(req.query.search, "i");
+    filter.$or = [
+      { title: searchRegex },
+      { location: searchRegex },
+      { country: searchRegex },
+    ];
+  }
+  // Filter by category
+  if (req.query.category) {
+    filter.category = req.query.category;
+  }
+  const allListings = await Listing.find(filter);
+  res.render("listings/index.ejs", {
+    allListings,
+    searchQuery: req.query.search || "",
+    activeCategory: req.query.category || "",
+  });
 };
 
 module.exports.renderNewForm = (req, res) => {
@@ -25,7 +43,7 @@ module.exports.showListing = async (req, res) => {
     .populate("owner"); //populate will get the data from the review collection and owner collection and show it in the listing page
   if (!listing) {
     req.flash("error", "Cannot find that Listing!");
-    res.redirect("/listings");
+    return res.redirect("/listings");
   }
   console.log(listing);
   res.render("listings/show.ejs", { listing });
@@ -55,7 +73,7 @@ module.exports.renderEditForm = async (req, res) => {
   const listing = await Listing.findById(id);
   if (!listing) {
     req.flash("error", "Cannot find that Listing!");
-    res.redirect("/listings");
+    return res.redirect("/listings");
   }
   let originalImageUrl = listing.image.url;
   originalImageUrl = originalImageUrl.replace("/upload", "/upload/w_250"); //this will replace the original image url with the new one containing width provided by cloudinary
