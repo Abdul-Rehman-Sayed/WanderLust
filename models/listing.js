@@ -33,6 +33,20 @@ const listingSchema = new mongoose.Schema({
     type: Schema.Types.ObjectId, //store the id of the owner
     ref: "User", //reference to the User model
   },
+  category: {
+    type: String,
+    enum: [
+      "Trending",
+      "Rooms",
+      "Iconic cities",
+      "Mountains",
+      "Castles",
+      "Amazing Pools",
+      "Camping",
+      "Farms",
+      "Arctic",
+    ],
+  },
   geometry: {
     type: {
       type: String, // Don't do `{ location: { type: String } }`

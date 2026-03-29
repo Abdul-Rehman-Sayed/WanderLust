@@ -9,7 +9,7 @@ const path = require("path");
 const mongoose = require("mongoose");
 const ejsMate = require("ejs-mate");
 
-const port = 8080;
+const port = process.env.PORT || 8080;
 const dbUrl = process.env.ATLASDB_URL;
 
 const ExpressError = require("./utils/ExpressError.js");
@@ -115,7 +115,7 @@ app.all("*", (req, res, next) => {
 // Global error handler middleware for catching and displaying errors
 app.use((err, req, res, next) => {
   let { statusCode = 500, message = "Something Went Wrong!" } = err;
-  res.status(statusCode).render("error.ejs", { message });
+  res.status(statusCode).render("error.ejs", { message, currentUser: req.user });
   // res.status(statusCode).send(message);
 });
 

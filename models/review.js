@@ -10,7 +10,7 @@ const reviewSchema = new Schema({
   },
   createdAt: {
     type: Date,
-    default: Date.now(), // Set default to current date if not set separately
+    default: Date.now, // Pass function reference so each review gets its own timestamp
   },
   author: {
     type: Schema.Types.ObjectId,

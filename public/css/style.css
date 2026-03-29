@@ -6,9 +6,9 @@ body {
 }
 
 .container {
-  flex: 1; /* flex: 1 allows the .container to take up any remaining space in the body after accounting for other flex items (if any). */
+  flex: 1;
 }
-/* Navbar */
+
 .navbar {
   background-color: white;
   padding: 1rem 0 !important;
@@ -20,10 +20,9 @@ body {
 }
 
 .nav-link {
-  color: #222222 !important; /* overrides bootstrap css */
+  color: #222222 !important;
 }
 
-/* Footer */
 .f-info-links a {
   text-decoration: none;
   color: #222222;
@@ -45,15 +44,16 @@ body {
 
 .f-info {
   display: flex;
-  height: 8rem;
+  min-height: 6rem;
   background-color: #ebebeb;
   flex-wrap: wrap;
   justify-content: space-evenly;
   align-items: center;
   text-align: center;
+  padding: 1rem;
+  gap: 0.5rem;
 }
 
-/* Cards */
 .listing-card {
   border: none !important;
   margin-bottom: 2rem;
@@ -66,7 +66,7 @@ body {
 }
 
 .card-body {
-  padding: 0 !important;
+  padding: 0.5rem 0 !important;
 }
 
 .card-text p {
@@ -78,9 +78,10 @@ body {
   color: #000000 !important;
 }
 
-/* Card Effect */
 .card-img-overlay {
   opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: 1rem;
 }
 
 .card-img-overlay:hover {
@@ -88,19 +89,33 @@ body {
   background-color: white;
 }
 
-/* New Page */
 .add-btn {
   background-color: #fe424d !important;
   border: none !important;
 }
 
-/* Edit Page */
+.add-btn:hover {
+  background-color: #e03440 !important;
+}
+
 .edit-btn {
   background-color: #fe424d !important;
   border: none !important;
 }
 
-/* Show Page */
+.edit-btn:hover {
+  background-color: #e03440 !important;
+}
+
+.del-btn {
+  background-color: #222 !important;
+  border: none !important;
+}
+
+.del-btn:hover {
+  background-color: #444 !important;
+}
+
 .show-img {
   height: 40vh;
   object-fit: cover;
@@ -117,5 +132,55 @@ body {
 
 #map {
   height: 400px;
-  width: 80vh;
+  width: 100%;
+  border-radius: 1rem;
+}
+
+@media (max-width: 767.98px) {
+  .show-img {
+    height: 30vh;
+  }
+
+  #map {
+    height: 250px;
+  }
+
+  .f-info {
+    flex-direction: column;
+    min-height: auto;
+    padding: 1.5rem 1rem;
+    gap: 0.75rem;
+  }
+
+  .f-info-socials,
+  .f-info-links {
+    text-align: center;
+  }
+
+  .f-info-links a {
+    margin: 0 0.5rem;
+  }
+
+  .listing-card {
+    margin-bottom: 1.5rem;
+  }
+
+  .card-img-top {
+    border-radius: 0.75rem !important;
+  }
+
+  .form-control,
+  .form-select {
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .show-img {
+    height: 35vh;
+  }
+
+  #map {
+    height: 300px;
+  }
 }

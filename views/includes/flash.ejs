@@ -15,9 +15,8 @@
   </symbol>
 </svg>
 <% if(success && success.length) { %>
-<!-- success is empty array. So the div should not be visible and we have to provide a condition in which the success has some value so success.length -->
 <div
-  class="alert alert-success d-flex align-items-center alert-dismissible fade show col-6 offset-3"
+  class="alert alert-success d-flex align-items-center alert-dismissible fade show col-lg-6 offset-lg-3 col-md-8 offset-md-2 col-10 offset-1"
   role="alert"
 >
   <svg
@@ -34,11 +33,9 @@
 </div>
 <% } %>
 
-<!-- For error -->
 <% if(error && error.length) { %>
-<!-- error is empty array. So the div should not be visible and we have to provide a condition in which the error has some value so error.length -->
 <div
-  class="alert alert-danger d-flex align-items-center alert-dismissible fade show col-6 offset-3"
+  class="alert alert-danger d-flex align-items-center alert-dismissible fade show col-lg-6 offset-lg-3 col-md-8 offset-md-2 col-10 offset-1"
   role="alert"
 >
   <svg
