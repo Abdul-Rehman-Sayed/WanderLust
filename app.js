@@ -12,6 +12,17 @@ const ejsMate = require("ejs-mate");
 const port = process.env.PORT || 8080;
 const dbUrl = process.env.ATLASDB_URL;
 
+// Validate environment variables
+if (!dbUrl) {
+  console.error("ERROR: ATLASDB_URL environment variable is not set!");
+}
+if (!process.env.SECRET) {
+  console.error("ERROR: SECRET environment variable is not set!");
+}
+if (!process.env.MAP_TOKEN) {
+  console.error("ERROR: MAP_TOKEN environment variable is not set!");
+}
+
 const ExpressError = require("./utils/ExpressError.js");
 const listingRouter = require("./routes/listing.js");
 const reviewRouter = require("./routes/review.js");
@@ -26,13 +37,16 @@ const LocalStrategy = require("passport-local"); //passport-local is a strategy 
 const User = require("./models/user.js");
 const review = require("./models/review.js");
 
-main()
-  .then(() => {
-    console.log("Connected to Database");
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+// Only connect to database if dbUrl is available
+if (dbUrl) {
+  main()
+    .then(() => {
+      console.log("Connected to Database");
+    })
+    .catch((err) => {
+      console.log("Database connection error:", err);
+    });
+}
 
 async function main() {
   await mongoose.connect(dbUrl);
@@ -115,7 +129,9 @@ app.all("*", (req, res, next) => {
 // Global error handler middleware for catching and displaying errors
 app.use((err, req, res, next) => {
   let { statusCode = 500, message = "Something Went Wrong!" } = err;
-  res.status(statusCode).render("error.ejs", { message, currentUser: req.user });
+  res
+    .status(statusCode)
+    .render("error.ejs", { message, currentUser: req.user });
   // res.status(statusCode).send(message);
 });
 
@@ -123,6 +139,10 @@ if (process.env.NODE_ENV !== "production") {
   app.listen(port, () => {
     console.log(`Server is Connected to ${port}`);
   });
+} else {
+  // For Vercel serverless environment
+  console.log("Running in serverless mode");
 }
 
+// Export app for Vercel and other serverless platforms
 module.exports = app;
