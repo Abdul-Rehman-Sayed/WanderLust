@@ -26,14 +26,18 @@ const LocalStrategy = require("passport-local"); //passport-local is a strategy 
 const User = require("./models/user.js");
 const review = require("./models/review.js");
 
+// Connection promise
+let connectionPromise = null;
+
 // Only connect to database if dbUrl is available
 if (dbUrl) {
-  main()
+  connectionPromise = main()
     .then(() => {
       console.log("Connected to Database");
     })
     .catch((err) => {
       console.log("Database connection error:", err);
+      throw err; // Re-throw to prevent server from starting
     });
 }
 
@@ -65,6 +69,13 @@ if (dbUrl) {
       secret: process.env.SECRET,
     },
     touchAfter: 24 * 3600,
+    connectionOptions: {
+      connectTimeoutMS: 30000,
+      socketTimeoutMS: 30000,
+      serverSelectionTimeoutMS: 30000,
+      maxPoolSize: 10,
+      minPoolSize: 2,
+    },
   });
 
   store.on("error", (err) => {
@@ -137,9 +148,23 @@ app.use((err, req, res, next) => {
 });
 
 if (process.env.NODE_ENV !== "production") {
-  app.listen(port, () => {
-    console.log(`Server is Connected to ${port}`);
-  });
+  // Wait for database connection before starting server
+  if (connectionPromise) {
+    connectionPromise
+      .then(() => {
+        app.listen(port, () => {
+          console.log(`Server is Connected to ${port}`);
+        });
+      })
+      .catch(() => {
+        console.error("Failed to connect to database. Server not started.");
+        process.exit(1);
+      });
+  } else {
+    app.listen(port, () => {
+      console.log(`Server is Connected to ${port}`);
+    });
+  }
 }
 
 // Export app for Vercel and other serverless platforms
