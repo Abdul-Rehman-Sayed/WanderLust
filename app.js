@@ -60,29 +60,34 @@ app.use(express.urlencoded({ extended: true })); //to parse the data in request
 app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate);
 
-//using connect-mongo to store the session in the database
-const store = MongoStore.create({
-  mongoUrl: dbUrl,
-  crypto: {
-    secret: process.env.SECRET,
-  },
-  touchAfter: 24 * 3600, //time in seconds after which the session will be updated. Interval (in seconds) between session updates.
-});
+// Initialize session with MongoStore
+let store;
+if (dbUrl) {
+  store = MongoStore.create({
+    mongoUrl: dbUrl,
+    crypto: {
+      secret: process.env.SECRET,
+    },
+    touchAfter: 24 * 3600,
+  });
 
-store.on("error", (err) => {
-  console.log("Error in mongo session store", err);
-});
+  store.on("error", (err) => {
+    console.log("Error in mongo session store", err);
+  });
+}
 
 //using express-session to create a session
 const sessionOptions = {
-  store,
-  secret: process.env.SECRET,
+  store: store || undefined,
+  secret: process.env.SECRET || "fallback-secret-dev",
   resave: false,
   saveUninitialized: true,
   cookie: {
     expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
     maxAge: 7 * 24 * 60 * 60 * 1000,
     httpOnly: true,
+    secure: process.env.NODE_ENV === "production", // Only secure cookies in production
+    sameSite: "lax",
   },
 };
 
