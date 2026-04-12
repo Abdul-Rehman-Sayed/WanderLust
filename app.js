@@ -119,6 +119,10 @@ app.use((err, req, res, next) => {
   // res.status(statusCode).send(message);
 });
 
-app.listen(port, () => {
-  console.log(`Server is Connected to ${port}`);
-});
+if (process.env.NODE_ENV !== "production") {
+  app.listen(port, () => {
+    console.log(`Server is Connected to ${port}`);
+  });
+}
+
+module.exports = app;
