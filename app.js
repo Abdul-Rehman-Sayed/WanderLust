@@ -12,7 +12,6 @@ const ejsMate = require("ejs-mate");
 const port = process.env.PORT || 8080;
 const dbUrl = process.env.ATLASDB_URL;
 
-
 const ExpressError = require("./utils/ExpressError.js");
 const listingRouter = require("./routes/listing.js");
 const reviewRouter = require("./routes/review.js");
@@ -39,7 +38,14 @@ if (dbUrl) {
 }
 
 async function main() {
-  await mongoose.connect(dbUrl);
+  await mongoose.connect(dbUrl, {
+    connectTimeoutMS: 30000, // Increase initial connection timeout to 30 seconds
+    socketTimeoutMS: 30000, // Increase socket timeout to 30 seconds
+    serverSelectionTimeoutMS: 30000, // Increase server selection timeout
+    maxPoolSize: 10, // Maximum connection pool size
+    minPoolSize: 2, // Minimum connection pool size
+    retryWrites: true, // Enable retry for writes
+  });
 }
 
 app.set("views", path.join(__dirname, "views"));
