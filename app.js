@@ -12,16 +12,6 @@ const ejsMate = require("ejs-mate");
 const port = process.env.PORT || 8080;
 const dbUrl = process.env.ATLASDB_URL;
 
-// Validate environment variables
-if (!dbUrl) {
-  console.error("ERROR: ATLASDB_URL environment variable is not set!");
-}
-if (!process.env.SECRET) {
-  console.error("ERROR: SECRET environment variable is not set!");
-}
-if (!process.env.MAP_TOKEN) {
-  console.error("ERROR: MAP_TOKEN environment variable is not set!");
-}
 
 const ExpressError = require("./utils/ExpressError.js");
 const listingRouter = require("./routes/listing.js");
@@ -144,9 +134,6 @@ if (process.env.NODE_ENV !== "production") {
   app.listen(port, () => {
     console.log(`Server is Connected to ${port}`);
   });
-} else {
-  // For Vercel serverless environment
-  console.log("Running in serverless mode");
 }
 
 // Export app for Vercel and other serverless platforms
