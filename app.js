@@ -53,6 +53,7 @@ if (dbUrl) {
 
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
+app.set("trust proxy", 1); // Trust proxy is required for secure cookies on Render
 
 app.use(express.static(path.join(__dirname, "/public")));
 app.use(express.urlencoded({ extended: true }));
@@ -140,17 +141,15 @@ app.use((err, req, res, next) => {
     .render("error.ejs", { message, currentUser: req.user });
 });
 
-if (process.env.NODE_ENV !== "production") {
-  connectDB()
-    .then(() => {
-      app.listen(port, () => {
-        console.log(`Server is Connected to ${port}`);
-      });
-    })
-    .catch(() => {
-      console.error("Failed to connect to database. Server not started.");
-      process.exit(1);
+connectDB()
+  .then(() => {
+    app.listen(port, () => {
+      console.log(`Server is Connected to ${port}`);
     });
-}
+  })
+  .catch((err) => {
+    console.error("Failed to connect to database. Server not started.", err);
+    process.exit(1);
+  });
 
 module.exports = app;
