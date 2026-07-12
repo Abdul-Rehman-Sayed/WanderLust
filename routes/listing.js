@@ -28,18 +28,22 @@ router
   .get(wrapAsync(listingController.showListing))
   .put(
     isLoggedIn,
-    isOwner,
+    wrapAsync(isOwner),
     upload.single("listing[image]"), // Middleware to handle single file upload with the field name 'listing[image]'
     validateListing,
     wrapAsync(listingController.updateListing)
   )
-  .delete(isLoggedIn, isOwner, wrapAsync(listingController.destroyListing));
+  .delete(
+    isLoggedIn,
+    wrapAsync(isOwner),
+    wrapAsync(listingController.destroyListing)
+  );
 
 //Edit Route
 router.get(
   "/:id/edit",
   isLoggedIn,
-  isOwner,
+  wrapAsync(isOwner),
   wrapAsync(listingController.renderEditForm)
 );
 

@@ -22,6 +22,10 @@ module.exports.saveRedirectUrl = (req, res, next) => {
 module.exports.isOwner = async (req, res, next) => {
   let { id } = req.params;
   let listing = await Listing.findById(id);
+  if (!listing) {
+    req.flash("error", "Listing not found!");
+    return res.redirect("/listings");
+  }
   if (!listing.owner._id.equals(res.locals.currentUser._id)) {
     //The .equals() method is needed because these _id fields are likely MongoDB ObjectIds, and comparing them using === won't work.
     req.flash("error", "You do not have permission to do that!");
@@ -53,6 +57,10 @@ module.exports.validateReview = (req, res, next) => {
 module.exports.isReviewAuthor = async (req, res, next) => {
   let { id, reviewId } = req.params;
   let review = await Review.findById(reviewId);
+  if (!review) {
+    req.flash("error", "Review not found!");
+    return res.redirect(`/listings/${id}`);
+  }
   //if the review author is not equal to the user who wants to edit give a error
   if (!review.author._id.equals(res.locals.currentUser._id)) {
     //The .equals() method is needed because these _id fields are likely MongoDB ObjectIds, and comparing them using === won't work.
