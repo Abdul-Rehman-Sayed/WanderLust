@@ -1,6 +1,7 @@
 const Listing = require("./models/listing");
 const Review = require("./models/review.js");
 const ExpressError = require("./utils/ExpressError.js");
+const wrapAsync = require("./utils/wrapAsync.js");
 const { listingSchema, reviewSchema } = require("./schema.js");
 
 module.exports.isLoggedIn = (req, res, next) => {
@@ -19,7 +20,7 @@ module.exports.saveRedirectUrl = (req, res, next) => {
   next();
 };
 
-module.exports.isOwner = async (req, res, next) => {
+module.exports.isOwner = wrapAsync(async (req, res, next) => {
   let { id } = req.params;
   let listing = await Listing.findById(id);
   if (!listing) {
@@ -32,7 +33,7 @@ module.exports.isOwner = async (req, res, next) => {
     return res.redirect(`/listings/${id}`);
   }
   next();
-};
+});
 
 module.exports.validateListing = (req, res, next) => {
   let { error } = listingSchema.validate(req.body); //validate the data using schema
@@ -54,7 +55,7 @@ module.exports.validateReview = (req, res, next) => {
   }
 };
 
-module.exports.isReviewAuthor = async (req, res, next) => {
+module.exports.isReviewAuthor = wrapAsync(async (req, res, next) => {
   let { id, reviewId } = req.params;
   let review = await Review.findById(reviewId);
   if (!review) {
@@ -68,4 +69,4 @@ module.exports.isReviewAuthor = async (req, res, next) => {
     return res.redirect(`/listings/${id}`);
   }
   next();
-};
+});
