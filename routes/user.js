@@ -16,11 +16,9 @@ router
   .get(userController.renderLoginForm)
   .post(
     saveRedirectUrl,
-    //authenticate() function, which is used as route middleware to authenticate requests.
     passport.authenticate("local", {
-      //The string "local" refers to the strategy Passport.js should use to authenticate the user.
       failureRedirect: "/login",
-      failureFlash: true, //flash message when authentication fails
+      failureFlash: true,
     }),
     userController.login
   );

@@ -53,7 +53,7 @@ if (dbUrl) {
 
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
-app.set("trust proxy", 1); // Trust proxy is required for secure cookies on Render
+app.set("trust proxy", 1); 
 
 app.use(express.static(path.join(__dirname, "/public")));
 app.use(express.urlencoded({ extended: true }));
@@ -62,9 +62,6 @@ app.engine("ejs", ejsMate);
 
 let store;
 if (dbUrl) {
-  //no `crypto` option: it routes the secret through kruptein, which throws a
-  //TypeError on any secret missing an entire character class, breaking every
-  //session write. The cookie is still signed with SECRET below.
   store = MongoStore.create({
     mongoUrl: dbUrl,
     touchAfter: 24 * 3600,
@@ -119,7 +116,7 @@ app.use(async (req, res, next) => {
   } catch (err) {
     return next(new ExpressError(500, "Database connection failed"));
   }
-  next(); //kept outside the try so a downstream error is never reported as a DB failure
+  next(); 
 });
 
 app.get("/", (req, res) => {
@@ -137,8 +134,6 @@ app.all("*", (req, res, next) => {
 app.use((err, req, res, next) => {
   let { statusCode = 500, message = "Something Went Wrong!" } = err;
   console.error(`Error on ${req.method} ${req.originalUrl}:`, err);
-  //if the reply was already sent, rendering again throws ERR_HTTP_HEADERS_SENT,
-  //so hand off to Express's default handler instead
   if (res.headersSent) {
     return next(err);
   }

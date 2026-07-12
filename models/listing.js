@@ -25,13 +25,13 @@ const listingSchema = new mongoose.Schema({
   },
   reviews: [
     {
-      type: Schema.Types.ObjectId, //store array of review ids
-      ref: "Review", //reference to the Review model
+      type: Schema.Types.ObjectId,
+      ref: "Review",
     },
   ],
   owner: {
-    type: Schema.Types.ObjectId, //store the id of the owner
-    ref: "User", //reference to the User model
+    type: Schema.Types.ObjectId,
+    ref: "User",
   },
   category: {
     type: String,
@@ -49,8 +49,8 @@ const listingSchema = new mongoose.Schema({
   },
   geometry: {
     type: {
-      type: String, // Don't do `{ location: { type: String } }`
-      enum: ["Point"], // 'location.type' must be 'Point'
+      type: String,
+      enum: ["Point"],
       required: true,
     },
     coordinates: {
@@ -60,7 +60,6 @@ const listingSchema = new mongoose.Schema({
   },
 });
 
-//post middleware for deletion if the listing is deleted delete the reviews of that listings also
 listingSchema.post("findOneAndDelete", async (listing) => {
   if (listing) {
     await Review.deleteMany({ _id: { $in: listing.reviews } });

@@ -18,7 +18,6 @@ async function main() {
 const initDB = async () => {
   await Listing.deleteMany({});
   initData.data = initData.data.map((obj) => ({
-    //adds a new field to the object (or replaces it if it already existed).
     ...obj,
     owner: "680678b500b477ef4d3e1100",
   }));

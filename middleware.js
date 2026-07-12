@@ -28,7 +28,6 @@ module.exports.isOwner = wrapAsync(async (req, res, next) => {
     return res.redirect("/listings");
   }
   if (!listing.owner._id.equals(res.locals.currentUser._id)) {
-    //The .equals() method is needed because these _id fields are likely MongoDB ObjectIds, and comparing them using === won't work.
     req.flash("error", "You do not have permission to do that!");
     return res.redirect(`/listings/${id}`);
   }
@@ -36,22 +35,22 @@ module.exports.isOwner = wrapAsync(async (req, res, next) => {
 });
 
 module.exports.validateListing = (req, res, next) => {
-  let { error } = listingSchema.validate(req.body); //validate the data using schema
+  let { error } = listingSchema.validate(req.body);
   if (error) {
-    let errMsg = error.details.map((el) => el.message).join(","); // Combine all validation error messages into a single string and map will iterate over each element and get the message
+    let errMsg = error.details.map((el) => el.message).join(",");
     throw new ExpressError(400, errMsg);
   } else {
-    next(); // proceed to the next middleware/route handler if validation passes
+    next();
   }
 };
 
 module.exports.validateReview = (req, res, next) => {
-  let { error } = reviewSchema.validate(req.body); //validate the data using schema
+  let { error } = reviewSchema.validate(req.body);
   if (error) {
-    let errMsg = error.details.map((el) => el.message).join(","); // Combine all validation error messages into a single string and map will iterate over each element and get the message
+    let errMsg = error.details.map((el) => el.message).join(",");
     throw new ExpressError(400, errMsg);
   } else {
-    next(); // proceed to the next middleware/route handler if validation passes
+    next();
   }
 };
 
@@ -62,9 +61,7 @@ module.exports.isReviewAuthor = wrapAsync(async (req, res, next) => {
     req.flash("error", "Review not found!");
     return res.redirect(`/listings/${id}`);
   }
-  //if the review author is not equal to the user who wants to edit give a error
   if (!review.author._id.equals(res.locals.currentUser._id)) {
-    //The .equals() method is needed because these _id fields are likely MongoDB ObjectIds, and comparing them using === won't work.
     req.flash("error", "You do not have permission to do that!");
     return res.redirect(`/listings/${id}`);
   }
