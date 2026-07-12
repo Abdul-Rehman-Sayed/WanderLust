@@ -62,11 +62,11 @@ app.engine("ejs", ejsMate);
 
 let store;
 if (dbUrl) {
+  //no `crypto` option: it routes the secret through kruptein, which throws a
+  //TypeError on any secret missing an entire character class, breaking every
+  //session write. The cookie is still signed with SECRET below.
   store = MongoStore.create({
     mongoUrl: dbUrl,
-    crypto: {
-      secret: process.env.SECRET,
-    },
     touchAfter: 24 * 3600,
     connectionOptions: {
       connectTimeoutMS: 30000,
