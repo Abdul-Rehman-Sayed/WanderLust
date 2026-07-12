@@ -116,10 +116,10 @@ app.use((req, res, next) => {
 app.use(async (req, res, next) => {
   try {
     await connectDB();
-    next();
   } catch (err) {
-    next(new ExpressError(500, "Database connection failed"));
+    return next(new ExpressError(500, "Database connection failed"));
   }
+  next(); //kept outside the try so a downstream error is never reported as a DB failure
 });
 
 app.get("/", (req, res) => {
@@ -136,6 +136,12 @@ app.all("*", (req, res, next) => {
 
 app.use((err, req, res, next) => {
   let { statusCode = 500, message = "Something Went Wrong!" } = err;
+  console.error(`Error on ${req.method} ${req.originalUrl}:`, err);
+  //if the reply was already sent, rendering again throws ERR_HTTP_HEADERS_SENT,
+  //so hand off to Express's default handler instead
+  if (res.headersSent) {
+    return next(err);
+  }
   res
     .status(statusCode)
     .render("error.ejs", { message, currentUser: req.user });
